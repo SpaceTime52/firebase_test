@@ -1,9 +1,14 @@
 import React, { useState } from "react";
-import { appAuth } from "fbase";
+import { appAuth, fire_db } from "fbase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "@firebase/auth";
+import {
+  collection, addDoc
+} from "@firebase/firestore";
+
+
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -12,6 +17,25 @@ const Auth = () => {
 
   console.log("current:", appAuth.currentUser);
 
+
+  const onAdd = async (event) => {
+    event.preventDefault();
+
+    try {
+      const docRef = await addDoc(collection(fire_db, "clients"), {
+        first: "Ada",
+        last: "Lovelace",
+        born: 1815
+      });
+      console.log("Document written with ID: ", docRef.id);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+
+  };
+
+
+  
   const onChange = (event) => {
     const {
       target: { name, value },
@@ -73,6 +97,7 @@ const Auth = () => {
         <button className="btn btn-primary btn-lg px-4 gap-3 m-2" >Continue with Google</button>
         <button className="btn btn-primary btn-lg px-4 gap-3 m-2" >Continue with Github</button>
       </div>
+
     </div>
   );
 };
