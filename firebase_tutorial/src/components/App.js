@@ -7,6 +7,7 @@ console.log(fbase);
 //FirebaseAppImpl type
 
 function App() {
+
   const [isLoggedIn, setIsLoggedIn] = useState(appAuth.currentUser);
 
   return (
