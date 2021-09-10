@@ -13,9 +13,10 @@ import {
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, serNewAccount] = useState(false);
+  const [newAccount, serNewAccount] = useState(true);
 
-  console.log("current:", appAuth.currentUser);
+  console.log("currentUser:", appAuth.currentUser ? appAuth.currentUser.email : appAuth.currentUser);
+  console.log("---------");
 
 
   const onAdd = async (event) => {
@@ -33,7 +34,6 @@ const Auth = () => {
     }
 
   };
-
 
   
   const onChange = (event) => {
