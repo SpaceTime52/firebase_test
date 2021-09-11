@@ -3,21 +3,23 @@ import { appAuth, fire_db } from "fbase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GithubAuthProvider,
+  GoogleAuthProvider,
 } from "@firebase/auth";
-import {
-  collection, addDoc
-} from "@firebase/firestore";
-
-
+import { collection, addDoc } from "@firebase/firestore";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [newAccount, serNewAccount] = useState(true);
+  const [newAccount, setNewAccount] = useState(true);
+  const [error, setError] = useState("");
 
-  console.log("currentUser:", appAuth.currentUser ? appAuth.currentUser.email : appAuth.currentUser);
+  console.log(
+    "currentUser:",
+    appAuth.currentUser ? appAuth.currentUser.email : appAuth.currentUser
+  );
   console.log("---------");
-
 
   const onAdd = async (event) => {
     event.preventDefault();
@@ -26,16 +28,14 @@ const Auth = () => {
       const docRef = await addDoc(collection(fire_db, "clients"), {
         first: "Ada",
         last: "Lovelace",
-        born: 1815
+        born: 1815,
       });
       console.log("Document written with ID: ", docRef.id);
     } catch (e) {
       console.error("Error adding document: ", e);
     }
-
   };
 
-  
   const onChange = (event) => {
     const {
       target: { name, value },
@@ -60,15 +60,54 @@ const Auth = () => {
         //login
         data = await signInWithEmailAndPassword(appAuth, email, password);
       }
-
-      console.log(data);
     } catch (error) {
-      console.log(error);
+      setError(error.message);
     }
   };
 
+  const toggleAccount = () => {
+    setNewAccount(!newAccount);
+  };
+
+  const onSocialLoginClick = async (event) => {
+    console.log(event.target.name);
+
+    const {
+      target: { name },
+    } = event;
+
+    let provider;
+
+    if (name === "google") {
+      console.log("google provider!");
+      provider = new GoogleAuthProvider();
+    } else if (name === "github") {
+      console.log("github provider!");
+      provider = new GithubAuthProvider();
+    }
+
+    console.log(appAuth);
+    provider.addScope();
+    await signInWithPopup(appAuth, provider)
+      .then((result) => {
+        // const credential = GithubAuthProvider.credentialFromResult(result);
+        // const token = credential.accessToken;
+        // const user = result.user;
+        console.log(provider.providerId, " Signed In");
+        // ...
+      })
+      .catch((error) => {
+        const errorMessage = error.message;
+        // const email = error.email;
+        // const credential = GithubAuthProvider.credentialFromError(error);
+
+        console.log(errorMessage);
+        // ...
+      });
+  };
+
   return (
-    <div class="col-lg-6 mx-auto">
+    <div className="col-lg-6 mx-auto">
       <form onSubmit={onSubmit}>
         <input
           name="email"
@@ -90,14 +129,35 @@ const Auth = () => {
           onChange={onChange}
         />
 
-        <input type="submit" className="btn btn-primary btn-lg px-4 gap-3 m-2" value={newAccount ? "Create Account" : "Log In"} />
+        <input
+          type="submit"
+          className="btn btn-primary btn-lg px-4 gap-3 m-2"
+          value={newAccount ? "Create Account" : "Log In"}
+        />
       </form>
 
+      <span onClick={toggleAccount}>
+        <a href="#">{newAccount ? "Sign in here" : "Create Account"}</a>
+      </span>
+
       <div>
-        <button className="btn btn-primary btn-lg px-4 gap-3 m-2" >Continue with Google</button>
-        <button className="btn btn-primary btn-lg px-4 gap-3 m-2" >Continue with Github</button>
+        <button
+          name="google"
+          className="btn btn-primary btn-lg px-4 gap-3 m-2"
+          onClick={onSocialLoginClick}
+        >
+          Continue with Google
+        </button>
+        <button
+          name="github"
+          className="btn btn-primary btn-lg px-4 gap-3 m-2"
+          onClick={onSocialLoginClick}
+        >
+          Continue with Github
+        </button>
       </div>
 
+      <span>{error}</span>
     </div>
   );
 };
