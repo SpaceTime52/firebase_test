@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "@firebase/auth";
 import { getFirestore } from "@firebase/firestore";
+import { getStorage } from "@firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -19,3 +20,7 @@ const app = initializeApp(firebaseConfig);
 export default app;
 export const appAuth = getAuth(app); //<Auth>
 export const fire_db = getFirestore(app); //<Firestore>
+export const fire_storage = getStorage(
+  app,
+  "gs://nwitter-tutorial.appspot.com/"
+); //<Storage>

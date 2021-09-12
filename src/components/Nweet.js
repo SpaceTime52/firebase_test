@@ -37,6 +37,11 @@ const Nweet = ({ nweetObj, isOwner }) => {
     toggleEdit();
   };
 
+  const cancelEdit = () => {
+    toggleEdit();
+    setNewToEdit(nweetObj.nweetContents);
+  };
+
   return (
     <div className="m-3">
       {isEditing ? (
@@ -60,7 +65,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
             </button>
             <button
               className="btn btn-secondary btn-sm m-1"
-              onClick={toggleEdit}
+              onClick={cancelEdit}
             >
               {" "}
               <i className="fas fa-window-close"></i>{" "}
