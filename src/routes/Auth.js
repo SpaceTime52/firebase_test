@@ -113,7 +113,7 @@ const Auth = () => {
           name="email"
           type="email"
           placeholder="Email"
-          className="form-control mb-3"
+          className="form-control mb-3 mt-5"
           required
           value={email}
           onChange={onChange}
