@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { appAuth, fire_db } from "fbase";
+import { appAuth } from "fbase";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -7,7 +7,7 @@ import {
   GithubAuthProvider,
   GoogleAuthProvider,
 } from "@firebase/auth";
-import { collection, addDoc } from "@firebase/firestore";
+// import { collection, addDoc } from "@firebase/firestore";
 
 const Auth = () => {
   const [email, setEmail] = useState("");
@@ -21,20 +21,20 @@ const Auth = () => {
   );
   console.log("---------");
 
-  const onAdd = async (event) => {
-    event.preventDefault();
+  // const onAdd = async (event) => {
+  //   event.preventDefault();
 
-    try {
-      const docRef = await addDoc(collection(fire_db, "clients"), {
-        first: "Ada",
-        last: "Lovelace",
-        born: 1815,
-      });
-      console.log("Document written with ID: ", docRef.id);
-    } catch (e) {
-      console.error("Error adding document: ", e);
-    }
-  };
+  //   try {
+  //     const docRef = await addDoc(collection(fire_db, "clients"), {
+  //       first: "Ada",
+  //       last: "Lovelace",
+  //       born: 1815,
+  //     });
+  //     console.log("Document written with ID: ", docRef.id);
+  //   } catch (e) {
+  //     console.error("Error adding document: ", e);
+  //   }
+  // };
 
   const onChange = (event) => {
     const {
@@ -51,17 +51,19 @@ const Auth = () => {
   const onSubmit = async (event) => {
     event.preventDefault();
 
+    console.log("newAccount:", newAccount);
+
     try {
-      let data;
       if (newAccount) {
         //create account
-        data = await createUserWithEmailAndPassword(appAuth, email, password);
+        await createUserWithEmailAndPassword(appAuth, email, password);
       } else {
         //login
-        data = await signInWithEmailAndPassword(appAuth, email, password);
+        await signInWithEmailAndPassword(appAuth, email, password);
       }
     } catch (error) {
       setError(error.message);
+      alert(error.message);
     }
   };
 
@@ -86,8 +88,6 @@ const Auth = () => {
       provider = new GithubAuthProvider();
     }
 
-    console.log(appAuth);
-    provider.addScope();
     await signInWithPopup(appAuth, provider)
       .then((result) => {
         // const credential = GithubAuthProvider.credentialFromResult(result);
@@ -146,14 +146,14 @@ const Auth = () => {
           className="btn btn-primary btn-lg px-4 gap-3 m-2"
           onClick={onSocialLoginClick}
         >
-          Continue with Google
+          <i className="fab fa-google m-2"></i>Continue with Google
         </button>
         <button
           name="github"
           className="btn btn-primary btn-lg px-4 gap-3 m-2"
           onClick={onSocialLoginClick}
         >
-          Continue with Github
+          <i className="fab fa-github m-2"></i> Continue with Github
         </button>
       </div>
 

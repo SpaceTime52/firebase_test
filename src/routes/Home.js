@@ -1,15 +1,9 @@
-import React, { useState } from "react";
-import { appAuth, fire_db } from "fbase";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signInWithPopup,
-  GithubAuthProvider,
-  GoogleAuthProvider,
-} from "@firebase/auth";
+import React from "react";
+import { appAuth } from "fbase";
+import { signOut } from "@firebase/auth";
 
 const Home = () => {
-  const signOut = () => {
+  const authSignOut = () => {
     console.log("signout!");
     signOut(appAuth);
   };
@@ -18,9 +12,9 @@ const Home = () => {
     <button
       name="signout"
       className="btn btn-primary btn-lg px-4 gap-3 m-2"
-      onClick={signOut}
+      onClick={authSignOut}
     >
-      signOut
+      Sign Out
     </button>
   );
 };
