@@ -21,21 +21,6 @@ const Auth = () => {
   );
   console.log("---------");
 
-  // const onAdd = async (event) => {
-  //   event.preventDefault();
-
-  //   try {
-  //     const docRef = await addDoc(collection(fire_db, "clients"), {
-  //       first: "Ada",
-  //       last: "Lovelace",
-  //       born: 1815,
-  //     });
-  //     console.log("Document written with ID: ", docRef.id);
-  //   } catch (e) {
-  //     console.error("Error adding document: ", e);
-  //   }
-  // };
-
   const onChange = (event) => {
     const {
       target: { name, value },
@@ -137,7 +122,7 @@ const Auth = () => {
       </form>
 
       <span onClick={toggleAccount}>
-        <a href="#">{newAccount ? "Sign in here" : "Create Account"}</a>
+        <u>{newAccount ? "Sign in here" : "Create Account"}</u>
       </span>
 
       <div>

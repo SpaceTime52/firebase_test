@@ -4,7 +4,7 @@ import { signOut } from "@firebase/auth";
 
 const Profile = () => {
   const authSignOut = () => {
-    console.log("signout!");
+    // console.log("signout!");
     signOut(appAuth);
   };
 
