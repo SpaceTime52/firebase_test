@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { appAuth, fire_db, fire_storage } from "fbase";
 import { signOut } from "@firebase/auth";
 import { collection, addDoc, onSnapshot } from "@firebase/firestore";
-import { ref } from "@firebase/storage";
+import { ref, uploadString } from "@firebase/storage";
 import Nweet from "components/Nweet";
+import { v4 as uuidv4 } from "uuid";
 
 const Home = () => {
   const [nweet, setNweet] = useState("");
@@ -68,12 +69,23 @@ const Home = () => {
     const fileReader = new FileReader();
     fileReader.onloadend = (finishedEvent) => {
       setAttachment(finishedEvent.target.result);
+      console.log(finishedEvent.target);
     };
     fileReader.readAsDataURL(theFile);
   };
 
   const clearAttachment = () => {
     setAttachment(null);
+  };
+
+  const onFileUpload = () => {
+    const fileRef = ref(fire_storage, `${appAuth.currentUser.uid}/${uuidv4()}`);
+    const result = uploadString(fileRef, attachment, "data_url").then(
+      (snapshot) => {
+        console.log("Uploaded a data_url string!");
+      }
+    );
+    console.log(result);
   };
 
   return (
@@ -86,6 +98,13 @@ const Home = () => {
           className="form-control"
           id="inputGroupFile01"
           onChange={onFileChange}
+        />
+
+        <input
+          type="submit"
+          className="btn btn-outline-secondary"
+          value="upload File"
+          onClick={onFileUpload}
         />
       </div>
 
