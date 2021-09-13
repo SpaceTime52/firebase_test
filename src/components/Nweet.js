@@ -78,6 +78,7 @@ const Nweet = ({ nweetObj, isOwner }) => {
             {" "}
             {nweetObj.nweetContents} _ {nweetObj.creator}
           </span>
+          <a href={nweetObj.uploadedPhotoURL} className="m-2" target='_blank' rel="noreferrer">사진 보기</a>
           {isOwner && (
             <>
               <button

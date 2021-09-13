@@ -10,6 +10,7 @@ const Home = () => {
   const [nweet, setNweet] = useState("");
   const [nweetsList, setNweetsList] = useState([]);
   const [attachment, setAttachment] = useState(null);
+  const [fileLink, setFileLink] = useState("")
 
   useEffect(() => {
     onSnapshot(
@@ -49,11 +50,14 @@ const Home = () => {
         createdAt: Date.now(),
         creator: appAuth.currentUser.email,
         creatorID: appAuth.currentUser.uid,
-        creatorPhto: appAuth.currentUser.photoURL,
+        creatorPhoto: appAuth.currentUser.photoURL,
+        uploadedPhotoURL : fileLink
       });
       console.log("Document written with ID: ", docRef.id);
       document.getElementById("tweethere").value = "";
       //   window.location.reload();
+      setFileLink(null)
+
     } catch (e) {
       console.error("Error adding doc: ", e);
     }
@@ -81,13 +85,21 @@ const Home = () => {
   };
 
   const onFileUpload = async () => {
+    try {
     const fileRef = ref(fire_storage, `${appAuth.currentUser.uid}/${uuidv4()}`);
     await uploadString(fileRef, attachment, "data_url").then((snapshot) => {
       console.log("Uploaded a data_url string!");
       getDownloadURL(snapshot.ref).then((downloadURL) => {
         console.log("File available at", downloadURL);
+        alert('사진 업로드가 완료되었습니다.')
+        setFileLink(downloadURL)
+        setAttachment(null)
       });
     });
+  } catch (e){
+    console.error("Error on FileUploadc: ", e);
+
+  }
   };
 
   return (
