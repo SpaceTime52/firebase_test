@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { appAuth, fire_db, fire_storage } from "fbase";
 import { signOut } from "@firebase/auth";
 import { collection, addDoc, onSnapshot } from "@firebase/firestore";
-import { ref, uploadString } from "@firebase/storage";
+import { ref, uploadString, getDownloadURL } from "@firebase/storage";
 import Nweet from "components/Nweet";
 import { v4 as uuidv4 } from "uuid";
 
@@ -38,7 +38,6 @@ const Home = () => {
     } = e;
 
     setNweet(value);
-    console.log(nweet);
   };
 
   const onSubmit = async (e) => {
@@ -61,31 +60,34 @@ const Home = () => {
   };
 
   const onFileChange = (event) => {
-    const {
-      target: { files },
-    } = event;
+    try {
+      const {
+        target: { files },
+      } = event;
 
-    const theFile = files[0];
-    const fileReader = new FileReader();
-    fileReader.onloadend = (finishedEvent) => {
-      setAttachment(finishedEvent.target.result);
-      console.log(finishedEvent.target);
-    };
-    fileReader.readAsDataURL(theFile);
+      const theFile = files[0];
+      const fileReader = new FileReader();
+      fileReader.onloadend = (finishedEvent) => {
+        setAttachment(finishedEvent.target.result);
+      };
+      fileReader.readAsDataURL(theFile);
+    } catch (e) {
+      console.error("Error adding doc: ", e);
+    }
   };
 
   const clearAttachment = () => {
     setAttachment(null);
   };
 
-  const onFileUpload = () => {
+  const onFileUpload = async () => {
     const fileRef = ref(fire_storage, `${appAuth.currentUser.uid}/${uuidv4()}`);
-    const result = uploadString(fileRef, attachment, "data_url").then(
-      (snapshot) => {
-        console.log("Uploaded a data_url string!");
-      }
-    );
-    console.log(result);
+    await uploadString(fileRef, attachment, "data_url").then((snapshot) => {
+      console.log("Uploaded a data_url string!");
+      getDownloadURL(snapshot.ref).then((downloadURL) => {
+        console.log("File available at", downloadURL);
+      });
+    });
   };
 
   return (
